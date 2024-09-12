@@ -1,6 +1,6 @@
 # SystemMetrics-Dashboard
 
-SystemMetrics-Dashboard is a real-time system resource monitoring web application that provides live metrics such as CPU usage and memory availability. The application uses Spring Boot and Chart.js to create an interactive dashboard, giving users insight into their host's system health through graphical doughnut charts. This is just a sample web application, I have created for my students.
+SystemMetrics-Dashboard is a real-time system resource monitoring web application that provides live metrics such as CPU usage and memory availability. The application uses Spring Boot and Chart.js to create an interactive dashboard, giving users insight into their host's system health through graphical doughnut charts. This is just a sample web application, I have created for testing/POC purpose.
 
 ## Features:
 - **Real-time CPU Usage Monitoring**
