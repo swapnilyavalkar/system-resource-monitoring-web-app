@@ -1,0 +1,160 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta http-equiv="refresh" content="2">
+    <title>System Overview</title>
+    <script src="https://cdn.jsdelivr.net/npm/chart.js"></script>
+    <style>
+        body { 
+            background-color: #f4f4f4; 
+            font-family: Arial, sans-serif; 
+            text-align: center; 
+        }
+        #charts { 
+            display: flex; 
+            justify-content: center; 
+            margin-top: 30px; 
+        }
+        .chart-container { 
+            width: 40%; 
+            padding: 20px; 
+        }
+
+        h1 { color: rgb(0, 0, 255); }
+        .highlight {
+            font-size: 0.8em;
+            background-color: #0b0c0c; /* Charcoal background */
+            color: #f1f4f5; /* Sky Blue text */
+            padding: 10px;
+            margin-bottom: 30px;
+        }
+
+        a {
+            font-size: 3em;
+            color: #ffffff; /* Light Blue link */
+            text-decoration: underline;
+        }
+
+
+        .info-table {
+            margin: 20px auto;
+            font-size: 1em;
+            border-collapse: collapse;
+            border: 2px solid #000;
+            width: 50%;
+        }
+
+        .info-table td {
+            padding: 12px;
+            border: 1px solid #000;
+        }
+
+        .info-table td:first-child {
+            font-weight: bold;
+            color: rgb(100, 99, 99);
+        }
+
+        .info-table td:nth-child(2) {
+            font-size: 1em;
+            color: rgb(100, 99, 99);;
+        }
+
+    </style>
+</head>
+<body>
+    <div class="highlight">
+        <p>Created By <a href="https://github.com/swapnilyavalkar">Swapnil Yavalkar</a></p>
+    </div>
+    
+    <h1>System Overview</h1>
+    
+    <table class="info-table">
+        <tr>
+            <td>Hosted On</td>
+            <td id="host"></td>
+        </tr>
+        <tr>
+            <td>CPU Usage</td>
+            <td id="cpu"></td>
+        </tr>
+        <tr>
+            <td>Memory Usage</td>
+            <td id="memory"></td>
+        </tr>
+    </table>
+
+    <div id="charts">
+        <div class="chart-container">
+            <canvas id="cpuDoughnut"></canvas>
+        </div>
+        <div class="chart-container">
+            <canvas id="memoryDoughnut"></canvas>
+        </div>
+    </div>
+
+    <script>
+        const cpuDoughnutCtx = document.getElementById('cpuDoughnut').getContext('2d');
+        const memoryDoughnutCtx = document.getElementById('memoryDoughnut').getContext('2d');
+
+        let cpuDoughnutChart = new Chart(cpuDoughnutCtx, {
+            type: 'doughnut',
+            data: {
+                labels: ['Used CPU', 'Available CPU'],
+                datasets: [{
+                    data: [0, 100], // placeholder values, updated in fetchData
+                    backgroundColor: ['#ff6347', '#dcdcdc'],
+                    hoverBackgroundColor: ['#ff4500', '#c0c0c0']
+                }]
+            },
+            options: {
+                responsive: true,
+                maintainAspectRatio: false,
+                cutout: '70%',
+            }
+        });
+
+        let memoryDoughnutChart = new Chart(memoryDoughnutCtx, {
+            type: 'doughnut',
+            data: {
+                labels: ['Used Memory', 'Free Memory'],
+                datasets: [{
+                    data: [0, 100], // placeholder values, updated in fetchData
+                    backgroundColor: ['#1e90ff', '#32cd32'],
+                    hoverBackgroundColor: ['#4682b4', '#00fa9a']
+                }]
+            },
+            options: {
+                responsive: true,
+                maintainAspectRatio: false,
+                cutout: '70%',
+            }
+        });
+
+        function fetchData() {
+            fetch('/info').then(response => response.json()).then(data => {
+                document.getElementById('host').textContent = data.hostname;
+                document.getElementById('cpu').textContent = `${data.cpuLoad.toFixed(2)}%`;
+                //document.getElementById('memory').textContent = `${data.freeMemory} MB (Total: ${data.totalMemory} MB)`;
+                document.getElementById('memory').innerHTML = `Free: <strong>${data.freeMemory} MB</strong> / Total: <strong>${data.totalMemory} MB</strong>`;
+                //document.getElementById('memory').textContent = `${data.freeMemory} MB`;
+                //document.getElementById('totalMemory').textContent = `${data.totalMemory} MB`;
+
+
+                // Update CPU Doughnut chart
+                cpuDoughnutChart.data.datasets[0].data = [data.cpuLoad, 100 - data.cpuLoad];
+                cpuDoughnutChart.update();
+
+                // Update Memory Doughnut chart
+                const usedMemory = data.totalMemory - data.freeMemory;
+                memoryDoughnutChart.data.datasets[0].data = [usedMemory, data.freeMemory];
+                memoryDoughnutChart.update();
+
+                setTimeout(fetchData, 5000); // refresh data every 2 seconds
+            });
+        }
+
+        fetchData(); // initial fetch
+    </script>
+</body>
+</html>
