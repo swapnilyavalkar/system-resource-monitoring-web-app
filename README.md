@@ -55,6 +55,7 @@ Additionally, the resource usage is visualized through doughnut charts:
 
 #### 5. Docker Deployment:
 
+##### [Prebuilt Docker Image](https://hub.docker.com/repository/docker/swapnilyavalkar/system-resource-monitoring-web-app/)
 ##### Build Docker Image:
 ```bash
 docker build -t system-resource-monitoring-web-app .
