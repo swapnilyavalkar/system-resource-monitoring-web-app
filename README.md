@@ -75,3 +75,7 @@ You can now access the application at `http://localhost:8080/index.html`.
 
 ### How to Contribute:
 Feel free to fork the repository, make improvements, and open a pull request. Any contribution to improve the application is welcome!
+
+### Screenshots:
+
+![Landing Page](screenshots/landing-page.png)
